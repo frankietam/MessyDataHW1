@@ -13,8 +13,8 @@ trips <- read_csv("trips_hw_1.csv")
 fares <- read_csv("fares_hw_1.csv")
 
 #Converting to tibbles
-#trips <- as.tibble(trips)
-#fares <- as.tibble(fares)
+trips <- as.tibble(trips)
+fares <- as.tibble(fares)
 ```
 
 ## Data Cleaning
@@ -44,16 +44,42 @@ View(trips)
 ```{r}
 #Only consider data with cash or credit card payment
 fares <- filter(fares, payment_type %in% c('CRD', 'CSH'))
-#Remove data with fare amount less than or equal to 0
-fares <- filter(fares, fare_amount > 0)
+#Remove data with fare amount less than 0.5
+fares <- filter(fares, fare_amount >= 0.5)
 #Remove data which tip amount is more than 50% of fare amount
 fares <- filter(fares, tip_amount/fare_amount < 0.5)
 #Remove data with discrepancy between calculated total amount and total_amount
 fares <- filter(fares, fare_amount+surcharge+mta_tax+tip_amount+tolls_amount==total_amount)
+#Remove vendor_id column
+fares <- select(fares, -vendor_id)
+View(fares)
 ```
 
-### Join Trips and Fares
 
+### Join Trips and Fares
+```{r}
+#Check for key for trips
+trips %>% count(medallion, hack_license, pickup_datetime) %>% filter(n>1)
+#Check for key for fares
+fares %>% count(medallion, hack_license, pickup_datetime) %>% filter(n>1)
+#check specific fare entry
+fares %>% filter(medallion==2013000386,hack_license==2013000384,pickup_datetime==ymd_hms(20130815171800))
+
+# let's do the left join and see what happens
+taxi_data <- trips %>% left_join(fares)
+# let's use anti join to see if there are rows in trips that don't have corresponding fares associated
+no_fares <- trips %>% anti_join(fares)
+
+#Remove duplicate rows
+nrow(distinct(trips))
+nrow(distinct(fares))
+
+#Only keep the rows with higher total_amount 
+fares <- fares %>% arrange(desc(total_amount)) %>% distinct(medallion, hack_license, pickup_datetime, .keep_all = TRUE)
+
+#Join trips and fares
+taxi_data <- inner_join(trips,fares)
+```
 
 ## Including Plots
 
