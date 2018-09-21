@@ -13,8 +13,8 @@ trips <- read_csv("trips_hw_1.csv")
 fares <- read_csv("fares_hw_1.csv")
 
 #Converting to tibbles
-trips <- as.tibble(trips)
-fares <- as.tibble(fares)
+#trips <- as.tibble(trips)
+#fares <- as.tibble(fares)
 ```
 
 ## Data Cleaning
@@ -42,11 +42,18 @@ View(trips)
 
 ### Fares file cleaning
 ```{r}
-
-
-
-
+#Only consider data with cash or credit card payment
+fares <- filter(fares, payment_type %in% c('CRD', 'CSH'))
+#Remove data with fare amount less than or equal to 0
+fares <- filter(fares, fare_amount > 0)
+#Remove data which tip amount is more than 50% of fare amount
+fares <- filter(fares, tip_amount/fare_amount < 0.5)
+#Remove data with discrepancy between calculated total amount and total_amount
+fares <- filter(fares, fare_amount+surcharge+mta_tax+tip_amount+tolls_amount==total_amount)
 ```
+
+### Join Trips and Fares
+
 
 ## Including Plots
 
