@@ -1,0 +1,59 @@
+---
+title: "HW_1_Yeonji_Frankie_Ofer"
+output: pdf_document
+---
+
+```{r}
+#Loading relevant libraries
+library(tidyverse)
+library(lubridate)
+
+#Loading filtered data files
+trips <- read_csv("trips_hw_1.csv")
+fares <- read_csv("fares_hw_1.csv")
+
+#Converting to tibbles
+trips <- as.tibble(trips)
+fares <- as.tibble(fares)
+```
+
+## Data Cleaning
+### Trips tibble cleaning
+
+```{r}
+#Limiting passanger count to between 1 and 6
+trips <- filter(trips, between(trips$passenger_count,1,6))
+#Removing 0 value distances
+trips <- filter(trips, trips$trip_distance>0)
+#filtering trip time in secs between 60 seconds to 7200 seconds (2 hours)
+trips <- filter(trips, between(trips$trip_time_in_secs,60,7200))
+#checking trip time in seconds using the pickup and dropoff datetimes 
+#removing all observations in which there is a difference of over 10 seconds
+trips<- trips %>% 
+  mutate(time_diff=as.duration(dropoff_datetime-pickup_datetime)) %>% 
+  mutate(different=abs(time_diff-as.duration(trips$trip_time_in_secs))>as.duration(10)) %>% 
+  filter(!different)
+#limiting fare codes to 1-6
+trips <- filter(trips, between(trips$rate_code,1,6))
+#removing irrelevant columns
+trips <- select(trips, -vendor_id,-store_and_fwd_flag, -c(11:16))
+View(trips)
+```
+
+### Fares file cleaning
+```{r}
+
+
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
