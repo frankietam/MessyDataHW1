@@ -78,14 +78,40 @@ taxi_data <- inner_join(trips,fares)
 
 # Part E
 ```{r}
-#Added column for total trips
+# i) Add column for total trips
 medallion_data <- taxi_data %>% group_by(medallion) %>% mutate(total_trips = n())
 
-#Added column for total passengers
+# ii) Add column for total passengers
 medallion_data <- medallion_data %>% group_by(medallion) %>% mutate(total_passengers = sum(passenger_count))
 
-#Added column for total time with passengers
-medallion_data <- medallion_data %>% group_by(medallion) %>% mutate(total_passengers = sum(passenger_count))
+# iii) Add column for total time with passengers
+medallion_data <- medallion_data %>% group_by(medallion) %>% mutate(total_time_with_passengers = sum(trip_time_in_secs))
+
+# iii) Add column for total time with passengers with 8/16 cutoff
+cutoff = ymd_hms("2013-08-16 00:00:00")
+
+medallion_data <- medallion_data %>% mutate(trip_time_on_next_day = ifelse( as.numeric(difftime(cutoff,dropoff_datetime,units="secs"))<0,as.numeric(difftime(cutoff,dropoff_datetime,units="secs")),0)) %>% group_by(medallion) %>% mutate(total_time_with_passengers_2 = sum(trip_time_in_secs+trip_time_on_next_day))
+
+# iv) Add column for total distance traveled
+medallion_data <- medallion_data %>% group_by(medallion) %>% mutate(total_distance = sum(trip_distance))
+
+# v) Add column for total earnings
+medallion_data <- medallion_data %>% group_by(medallion) %>% mutate(total_earnings = sum(total_amount))
+
+# Remove irrelevant columns
+medallion_data <- select(medallion_data, -(hack_license:total_amount),-trip_time_on_next_day)
+
+
+
+```
+# Part F
+```{r}
+
+```
+
+
+# Part G
+```{r}
 
 ```
 
