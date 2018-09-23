@@ -98,14 +98,30 @@ medallion_data <- medallion_data %>% group_by(medallion) %>% mutate(total_distan
 # v) Add column for total earnings
 medallion_data <- medallion_data %>% group_by(medallion) %>% mutate(total_earnings = sum(total_amount))
 
-# Remove irrelevant columns
-medallion_data <- select(medallion_data, -(hack_license:total_amount),-trip_time_on_next_day)
+# Select relevant columns for the final output
+partE_temp <- select(medallion_data, c(medallion, total_trips, total_passengers, total_time_with_passengers, total_distance, total_earnings))
 
-
+# Remove the duplicated rows; Make a list of taxicab
+partE_output <- partE_temp %>% distinct(partE_temp, medallion, .keep_all=T)
 
 ```
 # Part F
 ```{r}
+
+# Add column for hour 
+add_hour <- medallion_data %>% mutate(hours=format(as.POSIXct(pickup_datetime, format="%Y-%m-%d %H:%M"), format="%H") )
+
+# i) Add column for total passengers picked up
+partFi <- add_hour %>% group_by(hack_license, hours) %>%  mutate(total_passengers_picked_up = sum(passenger_count))
+
+# ii) Add column for trips started
+partFii <- partFi %>% group_by(hack_license, hours) %>%  mutate(trips_started = n())
+
+# Select relevant columns for the final output
+partF_temp <- select(partFii, c(hack_license, hours, total_passengers_picked_up, trips_started))
+
+# Remove the duplicated rows; Make a list of taxicab
+partF_output <- partF_temp %>% distinct(partF_temp, hack_license, .keep_all=T)
 
 ```
 
