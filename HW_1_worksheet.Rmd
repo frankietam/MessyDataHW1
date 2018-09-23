@@ -65,14 +65,9 @@ fares %>% count(medallion, hack_license, pickup_datetime) %>% filter(n>1)
 #check specific fare entry
 fares %>% filter(medallion==2013000386,hack_license==2013000384,pickup_datetime==ymd_hms(20130815171800))
 
-# let's do the left join and see what happens
-taxi_data <- trips %>% left_join(fares)
-# let's use anti join to see if there are rows in trips that don't have corresponding fares associated
-no_fares <- trips %>% anti_join(fares)
-
 #Remove duplicate rows
-nrow(distinct(trips))
-nrow(distinct(fares))
+distinct(trips)
+distinct(fares)
 
 #Only keep the rows with higher total_amount 
 fares <- fares %>% arrange(desc(total_amount)) %>% distinct(medallion, hack_license, pickup_datetime, .keep_all = TRUE)
@@ -80,6 +75,111 @@ fares <- fares %>% arrange(desc(total_amount)) %>% distinct(medallion, hack_lice
 #Join trips and fares
 taxi_data <- inner_join(trips,fares)
 ```
+
+# Part E
+```{r}
+# i) Add column for total trips
+medallion_data <- taxi_data %>% group_by(medallion) %>% mutate(total_trips = n())
+
+# ii) Add column for total passengers
+medallion_data <- medallion_data %>% group_by(medallion) %>% mutate(total_passengers = sum(passenger_count))
+
+# iii) Add column for total time with passengers
+medallion_data <- medallion_data %>% group_by(medallion) %>% mutate(total_time_with_passengers = sum(trip_time_in_secs))
+
+# iii) Add column for total time with passengers with 8/16 cutoff
+cutoff = ymd_hms("2013-08-16 00:00:00")
+
+medallion_data <- medallion_data %>% mutate(trip_time_on_next_day = ifelse( as.numeric(difftime(cutoff,dropoff_datetime,units="secs"))<0,as.numeric(difftime(cutoff,dropoff_datetime,units="secs")),0)) %>% group_by(medallion) %>% mutate(total_time_with_passengers_2 = sum(trip_time_in_secs+trip_time_on_next_day))
+
+# iv) Add column for total distance traveled
+medallion_data <- medallion_data %>% group_by(medallion) %>% mutate(total_distance = sum(trip_distance))
+
+# v) Add column for total earnings
+medallion_data <- medallion_data %>% group_by(medallion) %>% mutate(total_earnings = sum(total_amount))
+
+# Select relevant columns for the final output
+partE_temp <- select(medallion_data, c(medallion, total_trips, total_passengers, total_time_with_passengers, total_distance, total_earnings))
+
+# Remove the duplicated rows; Make a list of taxicab
+partE_output <- partE_temp %>% distinct(partE_temp, medallion, .keep_all=T)
+
+```
+# Part F
+```{r}
+
+# Add column for hour 
+add_hour <- medallion_data %>% mutate(hours=format(as.POSIXct(pickup_datetime, format="%Y-%m-%d %H:%M"), format="%H") )
+
+# i) Add column for total passengers picked up
+partFi <- add_hour %>% group_by(hack_license, hours) %>%  mutate(total_passengers_picked_up = sum(passenger_count))
+
+# ii) Add column for trips started
+partFii <- partFi %>% group_by(hack_license, hours) %>%  mutate(trips_started = n())
+
+# Select relevant columns for the final output
+partF_temp <- select(partFii, c(hack_license, hours, total_passengers_picked_up, trips_started))
+
+# Remove the duplicated rows; Make a list of taxicab
+partF_output <- partF_temp %>% distinct(partF_temp, hack_license, .keep_all=T)
+
+```
+
+
+# Part G
+```{r}
+taxi_data <- taxi_data %>% 
+  #Extracting hours
+  mutate(pickup_hour_time = as.integer(format(pickup_datetime,format='%H'))) %>%
+  mutate(dropoff_hour_time = as.integer(format(dropoff_datetime,format='%H'))) %>%
+  #Boolean for same hour rides and creating two columns for later use of adjusted pickup and dropoff times
+  mutate(adjusted_pickup_time=pickup_datetime) %>% 
+  mutate(adjusted_dropoff_time=dropoff_datetime) 
+
+# Separating to three tables, one with same hour rides, a second with rides that span two hours of the day and a 
+# third with rides spanning 3 hours of the day, manually adding trips that end the next day
+within_hour_rides <-filter(taxi_data, pickup_hour_time==dropoff_hour_time)
+one_hour_diff <- rbind(filter(taxi_data, dropoff_hour_time==pickup_hour_time+1), 
+                       filter(taxi_data, pickup_hour_time==23 & dropoff_hour_time==0)) 
+two_hour_diff <- rbind(filter(taxi_data, dropoff_hour_time==pickup_hour_time+2),
+                       filter(taxi_data, pickup_hour_time==22 & dropoff_hour_time==0),
+                       filter(taxi_data, pickup_hour_time==23 & dropoff_hour_time==1))  
+#Duplicating each row in the drives that span 2 hours of the day and adjusting the pickup and dropoff times for those
+one_hour_diff_dup <- rbind(one_hour_diff %>% 
+               mutate(adjusted_dropoff_time=ceiling_date(pickup_datetime, unit = "hours",change_on_boundary = FALSE)),
+      one_hour_diff %>% 
+        mutate(adjusted_pickup_time=floor_date(dropoff_datetime, unit = "hours")))
+
+#Duplicating each row in the drives that span 3 hours of the day and adjusting the pickup and dropoff times for those
+
+two_hour_diff_dup <- rbind(two_hour_diff %>% 
+        mutate(adjusted_dropoff_time=ceiling_date(pickup_datetime, unit = "hours",change_on_boundary = FALSE)),
+      two_hour_diff %>% 
+        mutate(adjusted_pickup_time=floor_date(dropoff_datetime, unit = "hours")),
+      two_hour_diff %>% 
+        mutate(adjusted_dropoff_time=floor_date(dropoff_datetime, unit = "hours")) %>% 
+        mutate(adjusted_pickup_time=ceiling_date(pickup_datetime, unit = "hours",change_on_boundary = FALSE)))
+
+# Spot checking shows that for every rides spanning two hours we now have two rides, one ending at the turn of the hour and another starting at the turn of the hour. Same applies for rides spanning more than 2 hours of the day where the "middle" ride is a full hour ride.
+# Combining all three tables and removing "rides" that have an adjusted start time on the next day
+Duplicated_rides <- rbind(within_hour_rides,one_hour_diff_dup,two_hour_diff_dup)
+Duplicated_rides <- filter(Duplicated_rides, format(adjusted_pickup_time,format='%Y:%m:%d')!='2013-08-15')                   
+# Creating the relevant variables
+Duplicated_rides <- Duplicated_rides %>% 
+  mutate(adj_trip_time_in_secs = as.duration(adjusted_dropoff_time-adjusted_pickup_time)) %>% 
+  mutate(adj_trip_dist = as.numeric(trip_distance*adj_trip_time_in_secs/trip_time_in_secs)) %>% 
+  mutate(adj_total_fare = as.numeric(total_amount*adj_trip_time_in_secs/trip_time_in_secs)) %>% 
+  mutate(adj_pickup_hour = as.integer(format(pickup_datetime,format='%H')))
+
+#Grouping and summarising the requested results
+partG_output <- Duplicated_rides %>% 
+  group_by(hack_license,adj_pickup_hour) %>% 
+  summarise(sum(adj_trip_time_in_secs),sum(adj_trip_dist),sum(adj_total_fare))
+
+names(partG_output) <- c("hack_license","hour","total_time_with_passengers","miles_with_passengers","earnings")
+View(partG_output)
+```
+
 
 ## Including Plots
 
