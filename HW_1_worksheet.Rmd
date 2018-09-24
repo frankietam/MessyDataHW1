@@ -128,6 +128,7 @@ partF_output <- partF_temp %>% distinct(partF_temp, hack_license, .keep_all=T)
 
 # Part G
 ```{r}
+
 taxi_data <- taxi_data %>% 
   #Extracting hours
   mutate(pickup_hour_time = as.integer(format(pickup_datetime,format='%H'))) %>%
@@ -178,6 +179,7 @@ partG_output <- Duplicated_rides %>%
 
 names(partG_output) <- c("hack_license","hour","total_time_with_passengers","miles_with_passengers","earnings")
 View(partG_output)
+
 ```
 
 
