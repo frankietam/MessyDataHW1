@@ -96,14 +96,34 @@ Dataset Maintenance
 This dataset is hosted by the City of Los Angeles on its open data portal. The owner is the Information Technology department which can be contacted on the portal. The dataset is scheduled to be updated daily throughout 2018.
 
 
-
-
-
 ```{r}
 #Loading relevant libraries
 library(tidyverse)
 library(lubridate)
 library(ggplot2)
+```
+
+
+## Create Dataset CSVs 
+
+```{r}
+
+trip_data_8 <- read_csv("trip_data_8.csv")
+trip_fare_8 <- read_csv("trip_fare_8.csv")
+
+#filtering to the right dates
+trips_hw_1 <- filter(trip_data_8, as.Date (trip_data_8$pickup_datetime) == ymd(20130815))
+fares_hw_1 <- filter(trip_fare_8, as.Date (trip_fare_8$pickup_datetime) == ymd(20130815))
+
+write_csv(trips_hw_1,"trips_hw_1.csv")
+write_csv(fares_hw_1,"fares_hw_1.csv")
+```
+
+
+
+## Create Datasets in Tibble
+
+```{r}
 
 #Loading filtered data files
 trips <- read_csv("trips_hw_1.csv")
