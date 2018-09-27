@@ -8,6 +8,97 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Dataset Description 1
+
+I chose to describe the [“2005-2010 Graduation Outcomes - School Level”](https://data.cityofnewyork.us/Education/2005-2010-Graduation-Outcomes-School-Level/vh2h-md7a) dataset from NYCOpenData website 
+
+Motivation
+
+This dataset was created by the Department of Education (DOE) for the purpose of tracking year-over-year trends in student graduation outcomes within the New York City (NYC) school system. This dataset could be used to better understand the performance of specific schools or school district within various demographics in order to inform policy making and resource allocation. It can also be accessed and used by parents in the process of choosing a school for their daughter or son. The creation of the dataset was funded by the DOE.
+
+Data Composition
+
+The data is mostly numerical with some textual columns. Each row within the dataset is per demographic (total cohort, special ed, general education, asian, black, hispanic, white, english learners, english proficient, male, female) school per year between the cohort years of 2001-2006 (graduation years of 2005-2010) with a duplicate row for each 2006 cohort (appearing as “2006 Aug”). The relationship between the different rows occurs if they belong to the same school and have a population overlap (e.g. a hispanic female student who is proficient in english will appear in 4 different rows).
+The dataset consists of 25,096 unique instances, each is a demographic-school-cohort. There are missing rows in the dataset. The dataset does not rely on any external sources and does not include any recommendations for analysis.
+
+Data Collection Process
+
+The data collected are the number of graduates within each school with either a Local or Regents diploma along with demographics data and enrollment status (dropped out/still enrolled).The data is available to the DOE and was internally processed, association between instances and individual level data was most likely also done by the DOE. The data was collected over the course of 6 years (2005-2010). 
+
+The dataset does not contain all possible instances. Some schools will not have all different populations every year. In addition, Records with cohorts of 20 students or less were suppressed to protect any privacy violations. Also, 79 schools were not presented individually but were included in the city wide calculations.
+
+
+
+Data Processing
+
+Aside from the aforementioned data manipulations no additional data manipulations were reported. The raw data is private and therefore not publicly available. The data as provided in NYC Open Data could achieve its intended goal yet there are numerous more related research questions it could support better (for example, school budgets, parent education, socio-economic statuses, etc.)
+
+Dataset Distribution
+
+The dataset can be downloaded from NYC Open Data as a csv file (https://data.cityofnewyork.us/Education/2005-2010-Graduation-Outcomes-School-Level/vh2h-md7a). NYC Open Data portal is currently the owner of the dataset which was released publicly on October 18, 2011. There seem to be no restrictions over the data usage or any licensing requirements.
+
+Dataset Maintenance 
+
+NYC Open Data is the current owner of the dataset and has last updated it on September 10, 2018. There is no linked repository for this dataset or any way to contribute to it.
+
+## Dataset Description 2
+
+The dataset I chose is the studentVLE dataset from  [“Open University Learning Analytics Dataset (OULAD)”](https://analyse.kmi.open.ac.uk/open_dataset). The OULAD contains 7 different csv files about courses, student demographics and registration, student assessment results, and student interactions with Virtual Learning Environment (VLE) for 22 courses (named module) taught at the Open University (OU) during 2013 and 2014. Among them, I chose student VLE dataset to specifically examine student online learning behaviors with VLE during the term.
+ 
+Motivation
+
+This dataset was collected by the OU for the purpose of examining student learning experiences with interactions in their Virtual Learning Environment (VLE) system. The potential use of this data set involves examining student learning behaviors represented by their click actions in VLE. This dataset could be also used to understand how much and long do students interact with the specific course material. Based on this analysis, this dataset could be used to improve their course design, focusing on how to design the specific course activities in VLE considering the various demographics. Papers or examples using this dataset is listed in https://analyse.kmi.open.ac.uk/open_dataset.
+ 
+Data Composition
+
+The dataset consists of 10,655,280 observations with the total six columns with numerical and categorical data. Each row shows the information about each student’s interactions with the specific material in the VLE for certain course. Each column indicates the name (i.e. identification code) of course module, course presentation, student id, VLE material, the date of how long students continued interacting with the material in VLE since the start of the module-presentation, and the number of clicks students made with the material in the specific date. There is some relationship between the different rows if a student belongs to the same course module, same course presentation, and VLE material (e.g. a student identified 28300 who is interacting with the 546652 VLE material on the 2013J presentation in the AAA course module appears in 3 different rows). This dataset has 32,593 unique students interacting with the VLE within 22 courses while there are 10,655,280 entries as a whole. The dataset relies on other external sources of the other csv files in the OULAD, including more information about the students and courses (e.g. adding the studentInfo csv file to the dataset could be helpful to examine the relationships between student interaction activity and their own demographic information).
+ 
+Data Collection & Processing Process
+ 
+This dataset involved some researchers in Knowledge Media Institute at the OU in the data collection and processing process who hoped to support the research in field of learning analytics and enhance learning experiences. The dataset was extracted in a data warehouse in the OU from 2013 to 2014, which gathers information from all available information systems using SAS technology. Then, the subset of the dataset was anonymized as some data (e.g. course module, student id) contained identifiable, personal information. The name of course module, course presentation, and student VLE material were completely randomized and replaced by numeric or alphabetical identifiers (e.g. 587283, AAA). IN the data anonymization, they used used the ARX anonymization tool. Then, the dataset was created as a subset of separate csv files in the whole dataset structure. The whole process of data collection and processing was under the ethical and privacy requirements applied at the Open University. The dataset does not include all possible instances. This dataset is a subset of the OU student data from 2013 and 2014, which does not contain the other course modules that the students also might take and interact with the VLE material.
+ 
+Data Distribution
+ 
+The dataset can be downloaded from [OULAD](https://analyse.kmi.open.ac.uk/open_dataset) website with a DOI named https://doi.org/10.6084/m9.figshare.5081998.v1 as a csv file. This dataset was released under CC-BY 4.0 license in June 2017. Those who downloaded the dataset would be free to copy and redistribute the material and transform the material for any purpose even commercially. Thus there seems to be no restrictions over the data use.
+ 
+Data Maintenance
+ 
+The dataset is managed by the administers named Jakub Kuzilek, Martin Hlosta and Zdenek Zdrahal in Knowledge Media Institute at the OU. They are in charge of all comments and feedbacks related to the whole set of OULAD. There is no information whether this data has been updated after their release in June 2017. There is a reference for whom want to cite this dataset: Kuzilek J., Hlosta M., Zdrahal Z. [Open University Learning Analytics dataset](https://www.nature.com/articles/sdata2017171)Sci. Data 4:170171 doi: 10.1038/sdata.2017.171 (2017).
+
+
+## Dataset Description 3
+
+The dataset describes below is from the [City of Los Angeles MyLA311 Service Request Data 2018](https://data.lacity.org/A-Well-Run-City/MyLA311-Service-Request-Data-2018/h65r-yf5i).
+
+Motivation 
+
+The dataset is created by City of Los Angeles Information Technology Agency. It allows city officials or residents to gain a better understanding of the nature of the 311 call requests and geographic locations of these requests. It also provides insights on how these requests are being handled and their progress. For the Information Technology Agency, it allows them to understanding the usage behavior of their target users. Trends and patterns can be observed by comparing dataset across different years. Viewers could potentially be tempted to take these requests and issues into their own hands.
+
+Dataset Composition
+
+The dataset is composed of rows and columns of numeric, textual and categorical data. Each row represents a service request call includes information from created date, updated date, action taken, owner, request type, status, request source, address with a total of 33 variables. Each row represents an isolated service request. The dataset as of Sep 24 2018 consists of 1,154,435 records. There are missing data in a number of columns in some of the records.
+
+Data Collection Process
+
+The data is collected both manually and through software interface since users can submit 311 service request via a variety of channels includes call center, email, mobile apps, websites and other resources. LA 311 service officers are responsible for curating the service requests. This particular dataset is related to service requests submitted in 2018. Each data instance is independent of each other. There are instances that the same service request at the same location are being submitted by multiple users.This dataset contains all possible instances. There is missing information in the dataset. It seems that the reason that some of the information are missing is because they aren’t recorded while some other missing information are not entered into the dataset. There are several address related variables are redundant. The values of these variables could be easily extracted from the values in the address variable. 
+
+Data Preprocessing
+
+Preprocessing and on-going processing and update of the data is being done by the LA 311 service officers. The raw data of service requests submitted through 311 call centers and other resources is not available to the public. This dataset has achieved its intended goal for allowing different stakeholders to gain a better understanding of the 311 service requests.
+
+Dataset Distribution
+
+This dataset is distributed through Los Angeles Open Data portal. It can be accessed through SODA API and OData. It also supports various formats for downloading includes CSV, JSON, RDF, RSS, XML and other formats. This dataset is first available on Jan 1 2018. It’s distributed under [Creative Commons license zero (CC0)](https://creativecommons.org/publicdomain/zero/1.0/legalcode). 
+
+
+Dataset Maintenance
+
+This dataset is hosted by the City of Los Angeles on its open data portal. The owner is the Information Technology department which can be contacted on the portal. The dataset is scheduled to be updated daily throughout 2018.
+
+
+
+
+
 ```{r}
 #Loading relevant libraries
 library(tidyverse)
