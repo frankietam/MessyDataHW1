@@ -185,7 +185,7 @@ View(partG_output)
 ```
 
 
-## Plotting
+## Plotting 1
 
 ```{r}
 
@@ -208,12 +208,36 @@ ggplot(data = Per_hour_stats) +
 
 ```
 
-###Analysis
+### Plotting 1 Analysis
 We created three scatter plots to analyse the rides patterns according to hour of the day on that specific date. We found that when looking at total number of rides per hour we see a rather steady high demand during the daytime between the hours of 8am and 2 pm, followed by a small decrease in demand for rides until 5pm. The demand for rides then climbs back up to reach a maximum of almost 12,000 at 7pm and steadily decreases until midnight. The demand for rides 2am and 5am is significantly lower as to be expected.
 
 When looking at average per mile earnings we find that at 7pm a cab driver (on that day) will make on average about 6 dollars per mile (makes you think twice before taking a cab on that hour), while the minimum is at 5am in which traffic is virtually non-existent and the average per mile earning drops to about 4 dollars.
 
 Contrasted with average earnings per second spent with passengers, we see that 5am is actually the maximum with earnings of about 3 cents per second spent with passengers while 7pm which is the most lucrative hour per mile is somewhere between 1.5 cents per second and 2 cents per second.
 
+
+## Plotting 2
+
+```{r}
+#Making plots with the frequency for (a) total earnings and (b) total trips, total distance, total time.
+
+ggplot(partE_output, aes(x = total_earnings, y = total_trips)) +
+  geom_bin2d(bins = 40)
+
+ggplot(partE_output, aes(x = total_earnings, y = total_time_with_passengers)) +
+  geom_bin2d(bins = 40)
+
+ggplot(partE_output, aes(x = total_earnings, y = total_distance)) +
+  geom_bin2d(bins = 40)
+```
+
+### Plotting 2 Analysis
+We also tried to just check whether total earnings actually relate to total trips, distance, and time. We created three scatter plots with geom_bin2d function by adding a heat map of 2d bin counts, which is easier for us to see the relationship considering the frequency. 
+
+When looking at the total trips and earnings together, we found that getting more money naturally related to the number of trips the drivers had on that day. The plot showed a positive correlation between two variables. We were also able to check the distribution of both earnings and trips on that day, showing that there were many drivers who got around $500 to $625 with around 40 trips on that day. 
+
+Similar as the prior plot, the plot of total earnings and times showed a positive relationship. It showed that as the driver got more money on that day, they spent more time on carrying passengers. For the distribution of both earnings and times on that day, it seemed that there were many drivers who earned around $500 and $700 by spending around 30,000 seconds carrying passengers on that day.
+
+When examining the relationship between total earnings and distance, however, it seems that those two variables were not much related to each other. Because of some outliers, the plot had a kind of maximum of y axis, not showing clear patterns of their relationships b. Across the total earnings the drivers made on that day, the total distance varied a lot as shown as a “line” of the relationship between two variables. With the further assignment of the limit to the maximum value of y axis or deleting the outliers, the plot would show more clear pattern of the relationship. 
 
 
