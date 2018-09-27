@@ -126,18 +126,24 @@ partF_output <- partF_temp %>% distinct(partF_temp, hack_license, .keep_all=T)
 ```
 
 
-# Part G
+## Plotting 2
+
 ```{r}
+ggplot(partE_output, aes(x = total_earnings, y = total_trips)) +
+  geom_bin2d(bins = 40)
 
+ggplot(partE_output, aes(x = total_earnings, y = total_time_with_passengers)) +
+  geom_bin2d(bins = 40)
+
+ggplot(partE_output, aes(x = total_earnings, y = total_distance)) +
+  geom_bin2d(bins = 40)
 ```
 
+###Findings from Plotting 2
+We also tried to just check whether total earnings actually relate to total trips, distance, and time. We created three scatter plots with geom_bin2d function by adding a heat map of 2d bin counts, which is easier for us to see the relationship considering the frequency. 
 
-## Including Plots
+When looking at the total trips and earnings together, we found that getting more money naturally related to the number of trips the drivers had on that day. The plot showed a positive correlation between two variables. We were also able to check the distribution of both earnings and trips on that day, showing that there were many drivers who got around $500 to $625 with around 40 trips on that day. 
 
-You can also embed plots, for example:
+Similar as the prior plot, the plot of total earnings and times showed a positive relationship. It showed that as the driver got more money on that day, they spent more time on carrying passengers. For the distribution of both earnings and times on that day, it seemed that there were many drivers who earned around $500 and $700 by spending around 30,000 seconds carrying passengers on that day.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+When examining the relationship between total earnings and distance, however, it seems that those two variables were not much related to each other. Because of some outliers, the plot had a kind of maximum of y axis, not showing clear patterns of their relationships b. Across the total earnings the drivers made on that day, the total distance varied a lot as shown as a “line” of the relationship between two variables. With the further assignment of the limit to the maximum value of y axis or deleting the outliers, the plot would show more clear pattern of the relationship. 
