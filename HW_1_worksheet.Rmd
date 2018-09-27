@@ -240,4 +240,23 @@ Similar as the prior plot, the plot of total earnings and times showed a positiv
 
 When examining the relationship between total earnings and distance, however, it seems that those two variables were not much related to each other. Because of some outliers, the plot had a kind of maximum of y axis, not showing clear patterns of their relationships b. Across the total earnings the drivers made on that day, the total distance varied a lot as shown as a “line” of the relationship between two variables. With the further assignment of the limit to the maximum value of y axis or deleting the outliers, the plot would show more clear pattern of the relationship. 
 
+## Plotting 3
+
+```{r}
+
+ggplot(data = Per_hour_stats) + geom_point(mapping = aes(x = hour, y=avg_time_with_passenegers))
+
+ggplot(data = Per_hour_stats) + geom_point(mapping = aes(x = hour, y=avg_earnings))
+
+ggplot(data = partG_output) + geom_point(mapping = aes(x = total_time_with_passengers, y=earnings)) + geom_smooth(aes(x =total_time_with_passengers, y = earnings)) + facet_wrap(~hour, nrow = 4)
+
+```
+
+### Plotting 3 Analysis
+
+We have shown there is a positive correlation between time with passengers and earnings from the plot above. When we further examine relationship between average time  with passengers and hour of day, we notice there is a sharp increase in time with passengers from 5am to 8am. Time  with passengers also gradually increases from 10am to 6pm to reach its highest point at around 2349 seconds. It then decreases significant from 6pm to 5am until it reaches its lowest point at around 1039 seconds. Whe we compare this plot with the plot using hour of day and average earnings, it reveals a similar pattern as hour of day and time with passengers except the discrepency between 9pm to 11pm where time with passengers decreases while earnings increases in that period.
+
+We then examine the relationship between time with passengers, hour of day and earnings. We notice the plots of most of the hours suggest a linear relationship between time with passengers and earnings. At the same time, some plots  (for instance 12am and 3am) reveal the existance of outliers that requires our further attention. 
+
+
 
