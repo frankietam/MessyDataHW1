@@ -7,8 +7,8 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-## Dataset Description 1
+# Part 1 Dataset Description
+## Dataset 1
 
 I chose to describe the [“2005-2010 Graduation Outcomes - School Level”](https://data.cityofnewyork.us/Education/2005-2010-Graduation-Outcomes-School-Level/vh2h-md7a) dataset from NYCOpenData website 
 
@@ -41,7 +41,7 @@ Dataset Maintenance
 
 NYC Open Data is the current owner of the dataset and has last updated it on September 10, 2018. There is no linked repository for this dataset or any way to contribute to it.
 
-## Dataset Description 2
+## Dataset 2
 
 The dataset I chose is the studentVLE dataset from  [“Open University Learning Analytics Dataset (OULAD)”](https://analyse.kmi.open.ac.uk/open_dataset). The OULAD contains 7 different csv files about courses, student demographics and registration, student assessment results, and student interactions with Virtual Learning Environment (VLE) for 22 courses (named module) taught at the Open University (OU) during 2013 and 2014. Among them, I chose student VLE dataset to specifically examine student online learning behaviors with VLE during the term.
  
@@ -66,7 +66,7 @@ Data Maintenance
 The dataset is managed by the administers named Jakub Kuzilek, Martin Hlosta and Zdenek Zdrahal in Knowledge Media Institute at the OU. They are in charge of all comments and feedbacks related to the whole set of OULAD. There is no information whether this data has been updated after their release in June 2017. There is a reference for whom want to cite this dataset: Kuzilek J., Hlosta M., Zdrahal Z. [Open University Learning Analytics dataset](https://www.nature.com/articles/sdata2017171)Sci. Data 4:170171 doi: 10.1038/sdata.2017.171 (2017).
 
 
-## Dataset Description 3
+## Dataset 3
 
 The dataset describes below is from the [City of Los Angeles MyLA311 Service Request Data 2018](https://data.lacity.org/A-Well-Run-City/MyLA311-Service-Request-Data-2018/h65r-yf5i).
 
@@ -96,6 +96,10 @@ Dataset Maintenance
 This dataset is hosted by the City of Los Angeles on its open data portal. The owner is the Information Technology department which can be contacted on the portal. The dataset is scheduled to be updated daily throughout 2018.
 
 
+# Part 2
+
+## Preparation
+
 ```{r}
 #Loading relevant libraries
 library(tidyverse)
@@ -104,7 +108,7 @@ library(ggplot2)
 ```
 
 
-## Create Dataset CSVs 
+### Create Dataset CSVs 
 
 ```{r}
 
@@ -121,7 +125,7 @@ write_csv(fares_hw_1,"fares_hw_1.csv")
 
 
 
-## Create Datasets in Tibble
+### Create Datasets in Tibble
 
 ```{r}
 
@@ -193,7 +197,7 @@ fares <- fares %>% arrange(desc(total_amount)) %>% distinct(medallion, hack_lice
 taxi_data <- inner_join(trips,fares)
 ```
 
-# Part E
+## Part E
 ```{r}
 # i) Add column for total trips
 medallion_data <- taxi_data %>% group_by(medallion) %>% mutate(total_trips = n())
@@ -222,7 +226,7 @@ partE_temp <- select(medallion_data, c(medallion, total_trips, total_passengers,
 partE_output <- partE_temp %>% distinct(partE_temp, medallion, .keep_all=T)
 
 ```
-# Part F
+## Part F
 ```{r}
 
 # Add column for hour 
@@ -243,7 +247,7 @@ partF_output <- partF_temp %>% distinct(partF_temp, hack_license, .keep_all=T)
 ```
 
 
-# Part G
+## Part G
 ```{r}
 
 taxi_data <- taxi_data %>% 
@@ -299,8 +303,7 @@ names(partG_output) <- c("hack_license","hour","total_time_with_passengers","mil
 View(partG_output)
 
 ```
-
-
+# Part 3
 ## Plotting 1
 
 ```{r}
