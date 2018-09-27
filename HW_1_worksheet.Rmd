@@ -254,9 +254,9 @@ ggplot(data = partG_output) + geom_point(mapping = aes(x = total_time_with_passe
 
 ### Plotting 3 Analysis
 
-We have shown there is a positive correlation between time with passengers and earnings from the plot above. When we further examine relationship between average time  with passengers and hour of day, we notice there is a sharp increase in time with passengers from 5am to 8am. Time  with passengers also gradually increases from 10am to 6pm to reach its highest point at around 2349 seconds. It then decreases significant from 6pm to 5am until it reaches its lowest point at around 1039 seconds. Whe we compare this plot with the plot using hour of day and average earnings, it reveals a similar pattern as hour of day and time with passengers except the discrepency between 9pm to 11pm where time with passengers decreases while earnings increases in that period.
+We have shown there is a positive correlation between time with passengers and earnings from the plot above. When we further examine relationship between average timewith passengers and hour of day, we notice there is a sharp increase in time with passengers from 5am to 8am. Time  with passengers also gradually increases from 10am to 6pm to reach its highest point at around 2349 seconds. It then decreases significant from 6pm to 5am until it reaches its lowest point at around 1039 seconds. Whe we compare this plot with the plot using hour of day and average earnings, it reveals a similar pattern as hour of day and time with passengers except the discrepency between 9pm to 11pm and 3am to 5am where time with passengers decreases while earnings increases in that period. 
 
-We then examine the relationship between time with passengers, hour of day and earnings. We notice the plots of most of the hours suggest a linear relationship between time with passengers and earnings. At the same time, some plots  (for instance 12am and 3am) reveal the existance of outliers that requires our further attention. 
+We then examine the relationship between time with passengers, hour of day and earnings from Part G output. We notice the plots of most of the hours suggest a linear relationship between time with passengers and earnings. However, some plots  (for instance 12am, 3am and 1pm) reveal the existance of potential outliers that requires our further investigation. 
 
 
 
