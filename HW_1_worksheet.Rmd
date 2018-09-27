@@ -7,6 +7,7 @@ output: pdf_document
 #Loading relevant libraries
 library(tidyverse)
 library(lubridate)
+library(ggplot2)
 
 #Loading filtered data files
 trips <- read_csv("trips_hw_1.csv")
@@ -23,8 +24,8 @@ fares <- as.tibble(fares)
 ```{r}
 #Limiting passanger count to between 1 and 6
 trips <- filter(trips, between(trips$passenger_count,1,6))
-#Removing 0 value distances
-trips <- filter(trips, trips$trip_distance>0)
+#Removing 0 value distances and limiting trip distance to 500 miles
+trips <- filter(trips, between(trips$trip_distance,0,500))
 #filtering trip time in secs between 60 seconds to 7200 seconds (2 hours)
 trips <- filter(trips, between(trips$trip_time_in_secs,60,7200))
 #checking trip time in seconds using the pickup and dropoff datetimes 
@@ -168,7 +169,8 @@ Duplicated_rides <- filter(Duplicated_rides, format(adjusted_pickup_time,format=
 # Creating the relevant variables
 Duplicated_rides <- Duplicated_rides %>% 
   mutate(adj_trip_time_in_secs = as.duration(adjusted_dropoff_time-adjusted_pickup_time)) %>% 
-  mutate(adj_trip_dist = as.numeric(trip_distance*adj_trip_time_in_secs/trip_time_in_secs)) %>% 
+  mutate(average_speed = as.numeric(trip_distance/trip_time_in_secs)) %>% 
+  mutate(adj_trip_dist = as.numeric(average_speed*adj_trip_time_in_secs)) %>% 
   mutate(adj_total_fare = as.numeric(total_amount*adj_trip_time_in_secs/trip_time_in_secs)) %>% 
   mutate(adj_pickup_hour = as.integer(format(pickup_datetime,format='%H')))
 
@@ -183,12 +185,35 @@ View(partG_output)
 ```
 
 
-## Including Plots
+## Plotting
 
-You can also embed plots, for example:
+```{r}
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+#Creating a table grouped by hour of day for analysis
+Per_hour_stats <- partG_output %>% group_by(hour) %>% summarise(mean(total_time_with_passengers), mean(miles_with_passengers), mean(earnings),n())
+names(Per_hour_stats) <- c("hour","avg_time_with_passenegers","avg_miles_with_passenegers","avg_earnings","total_rides")
+#creating two new variables for analysis
+Per_hour_stats <- mutate(Per_hour_stats,avg_per_mile_earnings = avg_earnings/avg_miles_with_passenegers)
+Per_hour_stats <- mutate(Per_hour_stats,avg_per_second_earnings = avg_earnings/avg_time_with_passenegers)
+
+#Plotting the hour of day stats
+ggplot(data = Per_hour_stats) + 
+  geom_point(mapping = aes(x = hour, y = total_rides))
+
+ggplot(data = Per_hour_stats) + 
+  geom_point(mapping = aes(x = hour, y = avg_per_mile_earnings))
+
+ggplot(data = Per_hour_stats) + 
+  geom_point(mapping = aes(x = hour, y = avg_per_second_earnings))
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+###Analysis
+We created three scatter plots to analyse the rides patterns according to hour of the day on that specific date. We found that when looking at total number of rides per hour we see a rather steady high demand during the daytime between the hours of 8am and 2 pm, followed by a small decrease in demand for rides until 5pm. The demand for rides then climbs back up to reach a maximum of almost 12,000 at 7pm and steadily decreases until midnight. The demand for rides 2am and 5am is significantly lower as to be expected.
+
+When looking at average per mile earnings we find that at 7pm a cab driver (on that day) will make on average about 6 dollars per mile (makes you think twice before taking a cab on that hour), while the minimum is at 5am in which traffic is virtually non-existent and the average per mile earning drops to about 4 dollars.
+
+Contrasted with average earnings per second spent with passengers, we see that 5am is actually the maximum with earnings of about 3 cents per second spent with passengers while 7pm which is the most lucrative hour per mile is somewhere between 1.5 cents per second and 2 cents per second.
+
+
+
